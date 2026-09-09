@@ -10,8 +10,11 @@
     "apply": "应用"
   },
   "Sidebar": {
+    "new": "新建",
+    "newFolder": "新建文件夹",
     "upload": "上传",
     "uploadFiles": "上传文件",
+    "uploadFolder": "上传文件夹",
     "readOnlyTooltip": "此存储桶为只读",
     "readOnly": "只读",
     "browse": "浏览",

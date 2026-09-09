@@ -109,6 +109,12 @@ export type FileSystemProps = {
   onPathChangeAction?: (path: string) => void
   onSelectionChange?: (item: FileSystemItem | null) => void
   onCreateFolderAction?: (path: string) => void | Promise<void>
+  /**
+   * Called with the internal "new folder" dialog opener so a parent (e.g. a
+   * Drive-style "+ New" menu outside the FileSystem) can pop the same dialog
+   * in the current folder. `null` when folder creation is unavailable.
+   */
+  onNewFolderOpenerChange?: (open: (() => void) | null) => void
   onDownloadEntry?: (item: FileSystemItem) => void | Promise<void>
   onDeleteEntry?: (item: FileSystemItem) => void | Promise<void>
   /** `onProgress(done, total)` is called as each item completes (for the bar). */

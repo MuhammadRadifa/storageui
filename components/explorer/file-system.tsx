@@ -326,6 +326,7 @@ export function FileSystem({
   onPathChangeAction,
   onSelectionChange,
   onCreateFolderAction,
+  onNewFolderOpenerChange,
   onDownloadEntry,
   onDeleteEntry,
   onDeleteEntries,
@@ -1726,6 +1727,13 @@ export function FileSystem({
     setNewFolderError(null)
     setNewFolderOpen(true)
   }, [])
+
+  // Let an outside "+ New" menu pop this same dialog in the current folder.
+  // Reports `null` when folder creation is unavailable (read-only).
+  React.useEffect(() => {
+    onNewFolderOpenerChange?.(onCreateFolderAction ? openNewFolderDialog : null)
+    return () => onNewFolderOpenerChange?.(null)
+  }, [onCreateFolderAction, onNewFolderOpenerChange, openNewFolderDialog])
 
   const createNewFolder = React.useCallback(async () => {
     if (!onCreateFolderAction || isCreatingFolder) return

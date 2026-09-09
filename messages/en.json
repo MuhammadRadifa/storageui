@@ -10,8 +10,11 @@
     "apply": "Apply"
   },
   "Sidebar": {
+    "new": "New",
+    "newFolder": "New folder",
     "upload": "Upload",
-    "uploadFiles": "Upload files",
+    "uploadFiles": "File upload",
+    "uploadFolder": "Folder upload",
     "readOnlyTooltip": "This bucket is read-only",
     "readOnly": "Read Only",
     "browse": "Browse",

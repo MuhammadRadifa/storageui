@@ -173,16 +173,34 @@ export function FileBrowser() {
     file: FileSystemFileItem
     url: string | null
   } | null>(null)
-  // The Upload trigger lives in the sidebar, but the file input (and the
-  // current folder) live here. Expose an opener through the shared store so the
-  // sidebar can pop the native picker; selected files upload straight to the
+  // The "+ New" menu lives in the sidebar, but the file inputs (and the
+  // current folder) live here. Expose openers through the shared store so the
+  // sidebar can pop the native pickers; selected files upload straight to the
   // current folder, no intermediate dialog.
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const folderInputRef = React.useRef<HTMLInputElement>(null)
   const setPickFiles = useUploadUiStore((state) => state.setPickFiles)
+  const setPickFolder = useUploadUiStore((state) => state.setPickFolder)
+  const setNewFolder = useUploadUiStore((state) => state.setNewFolder)
   React.useEffect(() => {
     setPickFiles(isReadOnly ? null : () => fileInputRef.current?.click())
-    return () => setPickFiles(null)
-  }, [isReadOnly, setPickFiles])
+    setPickFolder(isReadOnly ? null : () => folderInputRef.current?.click())
+    return () => {
+      setPickFiles(null)
+      setPickFolder(null)
+    }
+  }, [isReadOnly, setPickFiles, setPickFolder])
+  // The FileSystem owns the new-folder dialog; expose its opener through the
+  // shared store so the sidebar's "+ New" menu pops the same dialog.
+  const handleNewFolderOpenerChange = React.useCallback(
+    (open: (() => void) | null) => {
+      setNewFolder(isReadOnly ? null : open)
+    },
+    [isReadOnly, setNewFolder]
+  )
+  React.useEffect(() => {
+    if (isReadOnly) setNewFolder(null)
+  }, [isReadOnly, setNewFolder])
   // The folder FileSystem is currently showing, tagged with the connection it
   // belongs to. On a connection switch the path is stale, so we fall back to
   // the root — otherwise the remount opens a non-root folder with no back
@@ -335,6 +353,7 @@ export function FileBrowser() {
                 setRefreshNonce((nonce) => nonce + 1)
               }
         }
+        onNewFolderOpenerChange={handleNewFolderOpenerChange}
         onDownloadEntry={downloadEntry}
         onDeleteEntry={
           isReadOnly
@@ -451,6 +470,27 @@ export function FileBrowser() {
         type="file"
         multiple
         className="hidden"
+        onChange={(e) => {
+          if (!isReadOnly && e.target.files?.length) {
+            enqueue(
+              Array.from(e.target.files).map((file) => ({
+                file,
+                path: file.webkitRelativePath || file.name,
+              })),
+              currentPath
+            )
+          }
+          e.target.value = ""
+        }}
+      />
+      <input
+        ref={folderInputRef}
+        type="file"
+        className="hidden"
+        // `webkitdirectory` (+ `directory` for Firefox) turns the picker into a
+        // folder picker; every chosen file keeps its `webkitRelativePath` so
+        // the folder tree is recreated in the bucket instead of flattened.
+        {...({ webkitdirectory: "", directory: "" } as object)}
         onChange={(e) => {
           if (!isReadOnly && e.target.files?.length) {
             enqueue(

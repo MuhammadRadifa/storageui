@@ -9,6 +9,13 @@ import { useNavStore, type BrowseSection } from "@/lib/store/nav-store"
 import { useUploadUiStore } from "@/lib/store/upload-ui-store"
 import { Button } from "@/components/ui/button"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -26,12 +33,15 @@ import {
   Clock01Icon,
   Edit02Icon,
   FavouriteIcon,
+  File01Icon,
+  Folder01Icon,
   FolderLibraryIcon,
+  FolderPlusIcon,
   HardDriveIcon,
   LogoutIcon,
+  PlusIcon,
   PlusSignCircleIcon,
   Settings01Icon,
-  Upload01Icon,
 } from "@/components/foundations/icons"
 import { Logo, LogoText } from "@/components/foundations/logo"
 import { SettingsDialog } from "@/components/settings/settings-dialog"
@@ -65,8 +75,17 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
     openEditDialog,
   } = useConnections()
   const pickFiles = useUploadUiStore((state) => state.pickFiles)
+  const pickFolder = useUploadUiStore((state) => state.pickFolder)
+  const openNewFolder = useUploadUiStore((state) => state.newFolder)
   const section = useNavStore((state) => state.section)
   const setSection = useNavStore((state) => state.setSection)
+  const newDisabled = !activeConnection || activeConnection.readOnly
+  // Uploads and the new-folder dialog target the current folder, which the
+  // browser shows in the "All Files" section — jump back there first so the
+  // result lands where the user can see it.
+  const goToFiles = React.useCallback(() => {
+    if (section !== "all") setSection("all")
+  }, [section, setSection])
 
   return (
     <>
@@ -87,22 +106,71 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Button
-                  variant="default"
-                  title={
-                    activeConnection?.readOnly
-                      ? t("readOnlyTooltip")
-                      : t("uploadFiles")
-                  }
-                  disabled={!activeConnection || activeConnection.readOnly}
-                  onClick={() => pickFiles?.()}
-                  className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
-                >
-                  <AppIcon icon={Upload01Icon} />
-                  <span className="group-data-[collapsible=icon]:hidden">
-                    {t("upload")}
-                  </span>
-                </Button>
+                {newDisabled ? (
+                  <Button
+                    variant="default"
+                    title={
+                      activeConnection?.readOnly
+                        ? t("readOnlyTooltip")
+                        : t("new")
+                    }
+                    disabled
+                    className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+                  >
+                    <AppIcon icon={PlusIcon} />
+                    <span className="group-data-[collapsible=icon]:hidden">
+                      {t("new")}
+                    </span>
+                  </Button>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="default"
+                        title={t("new")}
+                        className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+                      >
+                        <AppIcon icon={PlusIcon} />
+                        <span className="group-data-[collapsible=icon]:hidden">
+                          {t("new")}
+                        </span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-48">
+                      <DropdownMenuItem
+                        disabled={!openNewFolder}
+                        onClick={() => {
+                          goToFiles()
+                          openNewFolder?.()
+                        }}
+                      >
+                        <AppIcon icon={FolderPlusIcon} />
+                        {t("newFolder")}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        disabled={!pickFiles}
+                        onClick={() => {
+                          goToFiles()
+                          pickFiles?.()
+                        }}
+                      >
+                        <AppIcon icon={File01Icon} />
+                        {t("uploadFiles")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        disabled={!pickFolder}
+                        onClick={() => {
+                          goToFiles()
+                          pickFolder?.()
+                        }}
+                      >
+                        <AppIcon icon={Folder01Icon} />
+                        {t("uploadFolder")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
