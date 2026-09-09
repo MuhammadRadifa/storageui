@@ -109,6 +109,10 @@ export type FileSystemProps = {
   onPathChangeAction?: (path: string) => void
   onSelectionChange?: (item: FileSystemItem | null) => void
   onCreateFolderAction?: (path: string) => void | Promise<void>
+  /** Pop the native file picker to upload files into the current folder. */
+  onUploadFilesAction?: () => void
+  /** Pop the native folder picker to upload a folder into the current folder. */
+  onUploadFolderAction?: () => void
   /**
    * Called with the internal "new folder" dialog opener so a parent (e.g. a
    * Drive-style "+ New" menu outside the FileSystem) can pop the same dialog

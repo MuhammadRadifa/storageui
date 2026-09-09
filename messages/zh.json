@@ -186,6 +186,8 @@
     "getInfo": "查看信息",
     "selectedCount": "已选择 {count}",
     "newFolder": "新建文件夹",
+    "uploadFiles": "上传文件",
+    "uploadFolder": "上传文件夹",
     "back": "后退",
     "forward": "前进",
     "reload": "刷新",

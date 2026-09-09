@@ -186,6 +186,8 @@
     "getInfo": "Get Info",
     "selectedCount": "{count} selected",
     "newFolder": "New Folder",
+    "uploadFiles": "Upload files",
+    "uploadFolder": "Upload folder",
     "back": "Back",
     "forward": "Forward",
     "reload": "Reload",

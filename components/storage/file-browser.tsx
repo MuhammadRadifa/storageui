@@ -354,6 +354,12 @@ export function FileBrowser() {
               }
         }
         onNewFolderOpenerChange={handleNewFolderOpenerChange}
+        onUploadFilesAction={
+          isReadOnly ? undefined : () => fileInputRef.current?.click()
+        }
+        onUploadFolderAction={
+          isReadOnly ? undefined : () => folderInputRef.current?.click()
+        }
         onDownloadEntry={downloadEntry}
         onDeleteEntry={
           isReadOnly
