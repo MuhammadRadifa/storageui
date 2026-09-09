@@ -133,6 +133,7 @@ import {
   File01Icon,
   FilterIcon,
   Folder01Icon,
+  FolderPlusIcon,
   GalleryThumbnailsIcon,
   GridViewIcon,
   InformationCircleIcon,
@@ -327,6 +328,8 @@ export function FileSystem({
   onSelectionChange,
   onCreateFolderAction,
   onNewFolderOpenerChange,
+  onUploadFilesAction,
+  onUploadFolderAction,
   onDownloadEntry,
   onDeleteEntry,
   onDeleteEntries,
@@ -2291,12 +2294,32 @@ export function FileSystem({
                 )
               ) : (
                 <>
-                  {onCreateFolderAction ? (
+                  {onCreateFolderAction ||
+                  onUploadFilesAction ||
+                  onUploadFolderAction ? (
                     <>
-                      <ContextMenuItem onClick={openNewFolderDialog}>
-                        <AppIcon icon={Folder01Icon} />
-                        {t("newFolder")}
-                      </ContextMenuItem>
+                      {onCreateFolderAction ? (
+                        <ContextMenuItem onClick={openNewFolderDialog}>
+                          <AppIcon icon={FolderPlusIcon} />
+                          {t("newFolder")}
+                        </ContextMenuItem>
+                      ) : null}
+                      {onCreateFolderAction &&
+                      (onUploadFilesAction || onUploadFolderAction) ? (
+                        <ContextMenuSeparator />
+                      ) : null}
+                      {onUploadFilesAction ? (
+                        <ContextMenuItem onClick={onUploadFilesAction}>
+                          <AppIcon icon={File01Icon} />
+                          {t("uploadFiles")}
+                        </ContextMenuItem>
+                      ) : null}
+                      {onUploadFolderAction ? (
+                        <ContextMenuItem onClick={onUploadFolderAction}>
+                          <AppIcon icon={Folder01Icon} />
+                          {t("uploadFolder")}
+                        </ContextMenuItem>
+                      ) : null}
                       <ContextMenuSeparator />
                     </>
                   ) : null}
