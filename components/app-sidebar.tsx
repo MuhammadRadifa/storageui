@@ -33,10 +33,10 @@ import {
   Clock01Icon,
   Edit02Icon,
   FavouriteIcon,
-  File01Icon,
-  Folder01Icon,
+  FileUploadIcon,
   FolderLibraryIcon,
   FolderPlusIcon,
+  FolderUpIcon,
   HardDriveIcon,
   LogoutIcon,
   PlusIcon,
@@ -155,7 +155,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                           pickFiles?.()
                         }}
                       >
-                        <AppIcon icon={File01Icon} />
+                        <AppIcon icon={FileUploadIcon} />
                         {t("uploadFiles")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -165,7 +165,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                           pickFolder?.()
                         }}
                       >
-                        <AppIcon icon={Folder01Icon} />
+                        <AppIcon icon={FolderUpIcon} />
                         {t("uploadFolder")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>

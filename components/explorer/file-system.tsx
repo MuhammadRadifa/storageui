@@ -131,9 +131,11 @@ import {
   ExternalLinkIcon,
   FavouriteIcon,
   File01Icon,
+  FileUploadIcon,
   FilterIcon,
   Folder01Icon,
   FolderPlusIcon,
+  FolderUpIcon,
   GalleryThumbnailsIcon,
   GridViewIcon,
   InformationCircleIcon,
@@ -2310,13 +2312,13 @@ export function FileSystem({
                       ) : null}
                       {onUploadFilesAction ? (
                         <ContextMenuItem onClick={onUploadFilesAction}>
-                          <AppIcon icon={File01Icon} />
+                          <AppIcon icon={FileUploadIcon} />
                           {t("uploadFiles")}
                         </ContextMenuItem>
                       ) : null}
                       {onUploadFolderAction ? (
                         <ContextMenuItem onClick={onUploadFolderAction}>
-                          <AppIcon icon={Folder01Icon} />
+                          <AppIcon icon={FolderUpIcon} />
                           {t("uploadFolder")}
                         </ContextMenuItem>
                       ) : null}
