@@ -509,12 +509,13 @@ export function FileSystemPierreTree({
 
     const searchValue = model.getSearchValue()
 
-    // The `paths` argument must stay unset: when both are given, resetPaths
-    // re-prepares the paths with the comparator the model was CREATED with
-    // and rejects the differently-ordered prepared input. Passing only the
-    // prepared input makes the reset adopt its path list as-is, and the
-    // reset itself carries the selection over.
-    model.resetPaths(undefined as unknown as readonly string[], {
+    // The prepared-only overload must be used: when both paths and
+    // preparedInput are given, resetPaths re-prepares the paths with the
+    // comparator the model was CREATED with and rejects the
+    // differently-ordered prepared input. Passing only the prepared input
+    // makes the reset adopt its path list as-is, and the reset itself
+    // carries the selection over.
+    model.resetPaths({
       initialExpandedPaths: expandedPaths,
       preparedInput,
     })
