@@ -31,6 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import {
   AppIcon,
   Clock01Icon,
+  CloudDownloadIcon,
   Edit02Icon,
   FavouriteIcon,
   FileUploadIcon,
@@ -76,6 +77,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   } = useConnections()
   const pickFiles = useUploadUiStore((state) => state.pickFiles)
   const pickFolder = useUploadUiStore((state) => state.pickFolder)
+  const importDrive = useUploadUiStore((state) => state.importDrive)
   const openNewFolder = useUploadUiStore((state) => state.newFolder)
   const section = useNavStore((state) => state.section)
   const setSection = useNavStore((state) => state.setSection)
@@ -167,6 +169,17 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                       >
                         <AppIcon icon={FolderUpIcon} />
                         {t("uploadFolder")}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        disabled={!importDrive}
+                        onClick={() => {
+                          goToFiles()
+                          importDrive?.()
+                        }}
+                      >
+                        <AppIcon icon={CloudDownloadIcon} />
+                        {t("importDrive")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

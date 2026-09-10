@@ -7,6 +7,10 @@ import {
   listPublicEnvConnections,
   resolveFiles,
 } from "@/lib/storage/connections-server"
+import {
+  importDriveFile,
+  type DriveImportResult,
+} from "@/lib/storage/drive-import"
 import * as fileOps from "@/lib/storage/file-operations"
 import type { EntryRef, SignedUpload } from "@/lib/storage/files-client"
 import type { FileSystemLoadChildrenResult } from "@/components/explorer/types"
@@ -53,6 +57,27 @@ export async function signUploadUrlAction(
 ): Promise<SignedUpload> {
   assertConnectionWritable(ref)
   return fileOps.signUploadUrl(resolveFiles(ref), key, contentType)
+}
+
+/** Download a public Google Drive file server-side into `destPrefix`. */
+export async function importDriveFileAction(
+  ref: ConnectionRef,
+  driveUrlOrId: string,
+  destPrefix: string,
+  filenameOverride?: string
+): Promise<DriveImportResult> {
+  assertConnectionWritable(ref)
+  try {
+    return await importDriveFile(
+      resolveFiles(ref),
+      driveUrlOrId,
+      destPrefix,
+      filenameOverride
+    )
+  } catch (error) {
+    if (error instanceof Error) throw error
+    throw new Error(String(error))
+  }
 }
 
 /** Create an object-store folder marker at a path ending in `/`. */

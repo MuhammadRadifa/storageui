@@ -70,4 +70,5 @@ export {
   IconLayoutSidebar as SidebarLeftIcon,
   IconCheck as Tick02Icon,
   IconUpload as Upload01Icon,
+  IconCloudDownload as CloudDownloadIcon,
 } from "@tabler/icons-react"

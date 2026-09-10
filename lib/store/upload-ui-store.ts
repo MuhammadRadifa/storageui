@@ -11,16 +11,20 @@ type UploadUiStore = {
   pickFiles: (() => void) | null
   pickFolder: (() => void) | null
   newFolder: (() => void) | null
+  importDrive: (() => void) | null
   setPickFiles: (fn: (() => void) | null) => void
   setPickFolder: (fn: (() => void) | null) => void
   setNewFolder: (fn: (() => void) | null) => void
+  setImportDrive: (fn: (() => void) | null) => void
 }
 
 export const useUploadUiStore = create<UploadUiStore>((set) => ({
   pickFiles: null,
   pickFolder: null,
   newFolder: null,
+  importDrive: null,
   setPickFiles: (fn) => set({ pickFiles: fn }),
   setPickFolder: (fn) => set({ pickFolder: fn }),
   setNewFolder: (fn) => set({ newFolder: fn }),
+  setImportDrive: (fn) => set({ importDrive: fn }),
 }))

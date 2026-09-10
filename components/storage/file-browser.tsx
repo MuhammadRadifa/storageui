@@ -36,6 +36,7 @@ import {
   Upload01Icon,
 } from "@/components/foundations/icons"
 import { NEUTRAL_BADGE_CLASSNAME } from "@/components/storage/badge-styles"
+import { DriveImportDialog } from "@/components/storage/drive-import-dialog"
 import { FileViewerDialog } from "@/components/storage/file-viewer-dialog"
 import { MarkedFilesView } from "@/components/storage/marked-files-view"
 import { UploadProgressPanel } from "@/components/storage/upload-progress-panel"
@@ -182,14 +183,18 @@ export function FileBrowser() {
   const setPickFiles = useUploadUiStore((state) => state.setPickFiles)
   const setPickFolder = useUploadUiStore((state) => state.setPickFolder)
   const setNewFolder = useUploadUiStore((state) => state.setNewFolder)
+  const setImportDrive = useUploadUiStore((state) => state.setImportDrive)
+  const [isDriveImportOpen, setDriveImportOpen] = React.useState(false)
   React.useEffect(() => {
     setPickFiles(isReadOnly ? null : () => fileInputRef.current?.click())
     setPickFolder(isReadOnly ? null : () => folderInputRef.current?.click())
+    setImportDrive(isReadOnly ? null : () => setDriveImportOpen(true))
     return () => {
       setPickFiles(null)
       setPickFolder(null)
+      setImportDrive(null)
     }
-  }, [isReadOnly, setPickFiles, setPickFolder])
+  }, [isReadOnly, setPickFiles, setPickFolder, setImportDrive])
   // The FileSystem owns the new-folder dialog; expose its opener through the
   // shared store so the sidebar's "+ New" menu pops the same dialog.
   const handleNewFolderOpenerChange = React.useCallback(
@@ -516,6 +521,17 @@ export function FileBrowser() {
         activeCount={activeCount}
         onDismissAction={dismiss}
         onClearAction={clearFinished}
+      />
+
+      <DriveImportDialog
+        open={isDriveImportOpen}
+        onOpenChangeAction={setDriveImportOpen}
+        destPath={currentPath}
+        connection={activeConnection}
+        onImportedAction={() => {
+          refresh()
+          setRefreshNonce((n) => n + 1)
+        }}
       />
     </div>
   )
