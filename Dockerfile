@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ─── Dependencies ─────────────────────────────────────────────────────────────
-# Install with the lockfile only, so this layer is cached until deps change.
+# Installed for the target platform so native modules (sharp) match the image.
 FROM oven/bun:1.3.14 AS dependencies
 WORKDIR /app
 
@@ -9,8 +9,13 @@ COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 # ─── Build ────────────────────────────────────────────────────────────────────
-FROM oven/bun:1.3.14 AS builder
+# Runs on the build host's own platform: under QEMU (the arm64 half of a
+# multi-arch build on amd64 runners) Bun crashes with SIGTRAP in `next build`.
+FROM --platform=$BUILDPLATFORM oven/bun:1.3.14 AS builder
 WORKDIR /app
+
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
 # NEXT_PUBLIC_* values are inlined into the client bundle at build time, so they
 # must be provided here (not at runtime). Override with --build-arg as needed.
@@ -22,7 +27,6 @@ ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL \
     NEXT_PUBLIC_ASSET_PREFIX=$NEXT_PUBLIC_ASSET_PREFIX \
     NEXT_TELEMETRY_DISABLED=1
 
-COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 RUN bun run build
 
@@ -39,7 +43,7 @@ ENV NODE_ENV=production \
 # config, and the installed dependencies.
 COPY --from=builder --chown=bun:bun /app/.next ./.next
 COPY --from=builder --chown=bun:bun /app/public ./public
-COPY --from=builder --chown=bun:bun /app/node_modules ./node_modules
+COPY --from=dependencies --chown=bun:bun /app/node_modules ./node_modules
 COPY --from=builder --chown=bun:bun /app/package.json ./package.json
 COPY --from=builder --chown=bun:bun /app/next.config.mjs ./next.config.mjs
 
